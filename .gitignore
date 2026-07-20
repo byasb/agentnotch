@@ -4,9 +4,9 @@
 *.xcodeproj
 xcuserdata/
 
-# Build / packaging artifacts (reproducible from scripts/)
+# Build / packaging artifacts
 dist/
 *.dmg
+# Icon intermediates (AppIcon.icns itself IS committed — see scripts/make-icon.py)
 scripts/AppIcon.iconset/
-scripts/AppIcon.icns
 scripts/icon-1024.png

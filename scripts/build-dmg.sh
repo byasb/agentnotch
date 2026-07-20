@@ -19,8 +19,12 @@ swift build -c release
 BIN="$(swift build -c release --show-bin-path)/$APP"
 [ -f "$BIN" ] || { echo "build produced no $APP binary"; exit 1; }
 
-echo "▸ Generating icon…"
-python3 scripts/make-icon.py >/dev/null
+# The icon is committed (scripts/AppIcon.icns). Only regenerate if it's missing
+# (needs Python + Pillow); everyday builds just reuse the checked-in file.
+if [ ! -f scripts/AppIcon.icns ]; then
+  echo "▸ Icon missing — generating…"
+  python3 scripts/make-icon.py >/dev/null
+fi
 
 echo "▸ Assembling $APP.app…"
 STAGE="$(mktemp -d)"

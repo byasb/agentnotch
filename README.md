@@ -51,11 +51,13 @@ swift build
 .build/debug/AgentNotch --cli    # one-shot text dump of all subsystems
 ```
 
-Package your own DMG (needs Python + Pillow for the icon):
+Package your own DMG:
 
 ```bash
 ./scripts/build-dmg.sh 0.1.0     # → dist/AgentNotch.dmg
 ```
+
+The app icon is checked in (`scripts/AppIcon.icns`). To redraw it, edit and run `scripts/make-icon.py` (needs Python + Pillow).
 
 Other debug flags: `--usage` / `--setup` (open panel on that tab), `--focus`, `--games`, `--all-range`, `--all-time` (with `--cli`).
 
