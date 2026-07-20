@@ -4,6 +4,10 @@ Native macOS menu bar + notch app that monitors your local coding-agent sessions
 
 ![AgentNotch usage dashboard](docs/usage.png)
 
+|  Focus · breathing pacer  |  Games while agents run  |
+| :---: | :---: |
+| ![Breathe](docs/breathe.png) | ![Games](docs/game.png) |
+
 ## Features
 
 - **Notch panel** — hover into the notch (or right-click menu bar icon → Toggle) → tabbed panel: Sessions / Usage / Servers / Routes / Actions / Setup.
@@ -41,7 +45,11 @@ It lives in the menu bar (and the notch) — there's no Dock icon. Right-click t
 
 ## Free — tips welcome
 
-AgentNotch is free and open-source (MIT). If it saves you some sanity while wrangling a fleet of agents, you can leave a tip: **[❤️ Tip jar](https://TIP-URL-HERE)**. Totally optional — a GitHub star helps just as much.
+AgentNotch is free and open-source (MIT). If it saves you some sanity while wrangling a fleet of agents, you can leave a tip:
+
+[![Ko-fi](https://img.shields.io/badge/Tip%20on-Ko--fi-FF5E5B?logo=ko-fi&logoColor=white)](https://ko-fi.com/byasb)
+
+Totally optional — a ⭐ on the repo helps just as much.
 
 ## Build from source
 
