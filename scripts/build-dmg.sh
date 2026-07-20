@@ -69,25 +69,34 @@ else
   codesign --force --deep --sign - "$APPDIR" 2>/dev/null || echo "  (codesign skipped)"
 fi
 
+# Notarize the .app itself, then staple the ticket INTO the bundle, so the app
+# carries its own proof and opens cleanly even offline. Set the profile up once:
+#   xcrun notarytool store-credentials NOTARY --apple-id <id> --team-id <TEAMID> --password <app-specific-pw>
+# then: NOTARY_PROFILE=NOTARY ./scripts/build-dmg.sh
+if [ -n "${NOTARY_PROFILE:-}" ] && [ -n "$SIGN_ID" ]; then
+  echo "▸ Notarizing the app (this can take a minute or two)…"
+  ZIP="$STAGE/$APP.zip"
+  ditto -c -k --keepParent "$APPDIR" "$ZIP"
+  xcrun notarytool submit "$ZIP" --keychain-profile "$NOTARY_PROFILE" --wait
+  rm -f "$ZIP"
+  echo "▸ Stapling ticket into the app…"
+  xcrun stapler staple "$APPDIR"
+  NOTARIZED=1
+else
+  echo "▸ Skipping notarization (set NOTARY_PROFILE and a Developer ID cert to enable)"
+fi
+
 echo "▸ Building DMG…"
 mkdir -p "$ROOT/dist"
 ln -s /Applications "$STAGE/Applications"
 DMG="$ROOT/dist/$APP.dmg"
 rm -f "$DMG"
 hdiutil create -volname "$APP" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
-rm -rf "$STAGE"
 
-# Notarize + staple the DMG if a stored notary profile is given. Set one up once:
-#   xcrun notarytool store-credentials NOTARY --apple-id <id> --team-id <TEAMID> --password <app-specific-pw>
-# then: NOTARY_PROFILE=NOTARY ./scripts/build-dmg.sh
-if [ -n "${NOTARY_PROFILE:-}" ] && [ -n "$SIGN_ID" ]; then
-  echo "▸ Notarizing (this can take a minute or two)…"
-  xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
-  echo "▸ Stapling ticket…"
-  xcrun stapler staple "$DMG"
-  echo "✓ notarized"
-else
-  echo "▸ Skipping notarization (set NOTARY_PROFILE and a Developer ID cert to enable)"
+# Staple the DMG too, so the whole download is self-verifying.
+if [ "${NOTARIZED:-0}" = 1 ]; then
+  xcrun stapler staple "$DMG" >/dev/null && echo "✓ notarized + stapled"
 fi
+rm -rf "$STAGE"
 
 echo "✓ $DMG ($(du -h "$DMG" | cut -f1))"

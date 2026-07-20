@@ -35,12 +35,13 @@ Everything local. No network, no accounts, no telemetry.
 
 1. Download `AgentNotch.dmg` from the [latest release](../../releases/latest).
 2. Open it and drag **AgentNotch** into **Applications**.
-3. First launch: right-click the app → **Open** → **Open** (the app is ad-hoc signed, not notarized, so macOS asks once). Or run:
-   ```bash
-   xattr -dr com.apple.quarantine /Applications/AgentNotch.app
-   ```
+3. Launch it. That's it — the app is signed with a Developer ID and notarized by Apple, so it opens with a normal double-click, no Gatekeeper warning.
 
 It lives in the menu bar (and the notch) — there's no Dock icon. Right-click the menu-bar icon for the menu; hover into the notch for the panel.
+
+## Free — tips welcome
+
+AgentNotch is free and open-source (MIT). If it saves you some sanity while wrangling a fleet of agents, you can leave a tip: **[❤️ Tip jar](https://TIP-URL-HERE)**. Totally optional — a GitHub star helps just as much.
 
 ## Build from source
 
