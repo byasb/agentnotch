@@ -3,3 +3,10 @@
 .DS_Store
 *.xcodeproj
 xcuserdata/
+
+# Build / packaging artifacts (reproducible from scripts/)
+dist/
+*.dmg
+scripts/AppIcon.iconset/
+scripts/AppIcon.icns
+scripts/icon-1024.png

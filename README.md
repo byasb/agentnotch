@@ -28,17 +28,33 @@ Everything local. No network, no accounts, no telemetry.
 
 ## Requirements
 
-- macOS 14+ (notch optional — everything also works from the menu bar)
-- Swift toolchain (Xcode or Command Line Tools)
+- macOS 14+, Apple silicon (notch optional — everything also works from the menu bar)
 - Claude Code and/or Codex CLI installed for anything to show up
 
-## Run
+## Install (DMG)
+
+1. Download `AgentNotch.dmg` from the [latest release](../../releases/latest).
+2. Open it and drag **AgentNotch** into **Applications**.
+3. First launch: right-click the app → **Open** → **Open** (the app is ad-hoc signed, not notarized, so macOS asks once). Or run:
+   ```bash
+   xattr -dr com.apple.quarantine /Applications/AgentNotch.app
+   ```
+
+It lives in the menu bar (and the notch) — there's no Dock icon. Right-click the menu-bar icon for the menu; hover into the notch for the panel.
+
+## Build from source
 
 ```bash
 swift build
 .build/debug/AgentNotch          # menu bar app
 .build/debug/AgentNotch --show   # same, opens notch panel immediately
 .build/debug/AgentNotch --cli    # one-shot text dump of all subsystems
+```
+
+Package your own DMG (needs Python + Pillow for the icon):
+
+```bash
+./scripts/build-dmg.sh 0.1.0     # → dist/AgentNotch.dmg
 ```
 
 Other debug flags: `--usage` / `--setup` (open panel on that tab), `--focus`, `--games`, `--all-range`, `--all-time` (with `--cli`).
