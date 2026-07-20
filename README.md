@@ -1,8 +1,8 @@
 # AgentNotch
 
-Native macOS menu bar + notch app that monitors your local coding-agent sessions (Claude Code, Codex) — live states, transcripts, token usage, dev servers, plus calm focus tools for when a busy fleet gets overwhelming.
+Native macOS menu bar + notch app that monitors your local coding-agent sessions (Claude Code, Codex) — live states, transcripts, token usage, dev servers, plus calm focus tools for when a busy fleet gets overwhelming. Open-source, built from scratch in SwiftUI.
 
-Open-source, built from scratch in SwiftUI. Inspired by the excellent [agentpeek.app](https://agentpeek.app/) (not affiliated) and [dock.cool](https://www.dock.cool/)'s widget design, with its own UX.
+![AgentNotch usage dashboard](docs/usage.png)
 
 ## Features
 
