@@ -54,8 +54,20 @@ cat > "$APPDIR/Contents/Info.plist" <<PLIST
 </plist>
 PLIST
 
-echo "▸ Ad-hoc signing…"
-codesign --force --deep --sign - "$APPDIR" 2>/dev/null || echo "  (codesign skipped)"
+# Sign with a Developer ID cert if one is available (needed for notarization).
+# Override with SIGN_ID="Developer ID Application: Name (TEAMID)"; otherwise
+# auto-detect. Falls back to ad-hoc so builds still work with no paid account.
+SIGN_ID="${SIGN_ID:-$(security find-identity -v -p codesigning 2>/dev/null \
+  | grep 'Developer ID Application' | head -1 | sed -E 's/.*"(.*)"/\1/')}"
+
+if [ -n "$SIGN_ID" ]; then
+  echo "▸ Signing with: $SIGN_ID"
+  codesign --force --deep --options runtime --timestamp \
+    --sign "$SIGN_ID" "$APPDIR"
+else
+  echo "▸ Ad-hoc signing (no Developer ID cert found — app won't be notarizable)"
+  codesign --force --deep --sign - "$APPDIR" 2>/dev/null || echo "  (codesign skipped)"
+fi
 
 echo "▸ Building DMG…"
 mkdir -p "$ROOT/dist"
@@ -64,5 +76,18 @@ DMG="$ROOT/dist/$APP.dmg"
 rm -f "$DMG"
 hdiutil create -volname "$APP" -srcfolder "$STAGE" -ov -format UDZO "$DMG" >/dev/null
 rm -rf "$STAGE"
+
+# Notarize + staple the DMG if a stored notary profile is given. Set one up once:
+#   xcrun notarytool store-credentials NOTARY --apple-id <id> --team-id <TEAMID> --password <app-specific-pw>
+# then: NOTARY_PROFILE=NOTARY ./scripts/build-dmg.sh
+if [ -n "${NOTARY_PROFILE:-}" ] && [ -n "$SIGN_ID" ]; then
+  echo "▸ Notarizing (this can take a minute or two)…"
+  xcrun notarytool submit "$DMG" --keychain-profile "$NOTARY_PROFILE" --wait
+  echo "▸ Stapling ticket…"
+  xcrun stapler staple "$DMG"
+  echo "✓ notarized"
+else
+  echo "▸ Skipping notarization (set NOTARY_PROFILE and a Developer ID cert to enable)"
+fi
 
 echo "✓ $DMG ($(du -h "$DMG" | cut -f1))"

@@ -54,8 +54,12 @@ swift build
 Package your own DMG:
 
 ```bash
-./scripts/build-dmg.sh 0.1.0     # → dist/AgentNotch.dmg
+./scripts/build-dmg.sh 0.1.0                       # ad-hoc signed
+SIGN_ID="Developer ID Application: … (TEAMID)" \
+  NOTARY_PROFILE=NOTARY ./scripts/build-dmg.sh 0.1.0   # signed + notarized
 ```
+
+With a **Developer ID Application** cert in your keychain the script signs with a hardened runtime; add a stored notary profile (`xcrun notarytool store-credentials`) and it notarizes + staples so the app opens with a plain double-click — no Gatekeeper prompt. Without a cert it ad-hoc signs (works fine, needs the one-time right-click-Open).
 
 The app icon is checked in (`scripts/AppIcon.icns`). To redraw it, edit and run `scripts/make-icon.py` (needs Python + Pillow).
 
